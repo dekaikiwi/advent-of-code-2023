@@ -4,18 +4,51 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-#include <vector>
-#include <tuple>
-#include <bits/stdc++.h>
-
-
+#include <map>
 
 using namespace std;
+
+const map<string, int> wordNumbers = {
+    {"one", 1},
+    {"two", 2},
+    {"three", 3},
+    {"four", 4},
+    {"five", 5},
+    {"six", 6},
+    {"seven", 7},
+    {"eight", 8},
+    {"nine", 9}
+};
 
 string createNumberFromFirstLastDigitInString(string s) {
    char firstNumber = '\0'; 
    char lastNumber = '\0'; 
    string result = "";
+   map<int, string> numberPositions = {};
+
+   cout << "===== " << s << " =====" << endl;
+
+    // Find instances of words that are written as numbers in the string.
+    // make note of the location off these words such that the actual
+    // number can be inserted at that location.
+    for (auto const& [word, number] : wordNumbers) {
+        int searchPosition = 0;
+
+        while (true) {
+            size_t pos = s.find(word, searchPosition);
+            if (pos == string::npos) { break; }
+
+            numberPositions.insert({pos, to_string(number)});
+            searchPosition = pos + word.length();
+        }
+    }
+
+    int offset = 0;
+
+    for (auto const& [position, number] : numberPositions) {
+        s = s.insert(position + offset, number);
+        offset += 1;
+    }
 
     for (size_t i = 0; i < s.length(); i++) {
         if (isdigit(s[i])) {
